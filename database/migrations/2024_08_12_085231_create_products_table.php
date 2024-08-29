@@ -20,7 +20,7 @@ return new class extends Migration
                 $table->integer('price');
                 $table->integer('stock');
                 $table->string('comment')->nullable();
-                $table->string('image_path')->nullable();
+                $table->string('img_path')->nullable();
                 $table->timestamps();
                 $table->integer('company_id')->nullable();
         });
@@ -34,6 +34,8 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('products');
-        $table->dropColumn('company_id');
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('company_id');
+        });
     }
 };

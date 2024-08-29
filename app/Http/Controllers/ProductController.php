@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Http\Requests\ProductRequest;
+use App\Http\Requests\TourokuRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\Company;
 
@@ -16,8 +16,10 @@ class ProductController extends Controller
     public function showList() {
         // productsテーブルからデータを取得
         $products = DB::table('products')->get();
+        $model = new Company();
+        $companies = $model->getList_companies();
 
-        return view('product', ['products' => $products]);
+        return view('product', ['products' => $products, 'companies' => $companies]);
     }
          
 
@@ -100,24 +102,24 @@ public function search(Request $request)
 
 
     // 新規登録
-    public function touroku(ProductRequest $request) {
+    public function touroku(TourokuRequest $request) {
         // ディレクトリ名
-        $dir = 'images';
+        $dir = 'img';
         // アップロードされたファイル名を取得
-        $file_name = $request->file('image_path')->getClientOriginalName();
+        $file_name = $request->file('img_path')->getClientOriginalName();
         // トランザクション開始
         DB::beginTransaction();
         try {
         // 登録処理呼び出し
         $model = new Product();
             // 取得したファイル名で保存
-        $request->file('image_path')->storeAs('public/' . $dir, $file_name);
-        $image_path = 'storage/' . $dir . '/' . $file_name;
-        $model->registProduct($request,$image_path);
+        $request->file('img_path')->storeAs('public/' . $dir, $file_name);
+        $img_path = 'storage/' . $dir . '/' . $file_name;
+        $model->registProduct($request,$img_path);
         DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return back();
+            return back()->route('list');
     }
 
     
@@ -138,11 +140,11 @@ public function search(Request $request)
         $products = $model->getList();
         $model = new Company();
         $companies = $model->getList_companies();
-        $image_path = Product::all();
+        $img_path = Product::all();
         $company =Company::all();
         $products = $model->getList();
 
-    return view('shosai', ['company' => $company,'companies' => $companies, 'products' => $products, 'image_path' =>$image_path]);
+    return view('shosai', ['company' => $company,'companies' => $companies, 'products' => $products, 'img_path' =>$img_path]);
     }
 
 
@@ -157,33 +159,30 @@ public function search(Request $request)
 
 
      //更新
-     public function update(Request $request, $id)
+    
+public function update(TourokuRequest $request, $id)
 {
     DB::beginTransaction();
     try {
         $products = Product::findOrFail($id);
 
-        if ($request->hasFile('image_path')) {
-            $image = $request->file('image_path');
-            $fileName = time() . '.' . $image->getClientOriginalExtension();
-            $request->file('image_path')->storeAs('public/images', $fileName);
-            $products->update([
-                'product_name' => $request->input('product_name'),
-                'price' => $request->input('price'),
-                'stock' => $request->input('stock'),
-                'comment' => $request->input('comment'),
-                'company_id' => $request->input('company_name'),
-                'image_path' => 'storage/images/' . $fileName
-            ]);
+        if ($request->hasFile('img_path')) {
+            $img = $request->file('img_path');
+            $fileName = time() . '.' . $img->getClientOriginalExtension();
+            $img->storeAs('public/img', $fileName);
+            $imgPath = 'storage/img/' . $fileName;
         } else {
-            $products->update([
-                'product_name' => $request->input('product_name'),
-                'price' => $request->input('price'),
-                'stock' => $request->input('stock'),
-                'comment' => $request->input('comment'),
-                'company_id' => $request->input('company_name')
-            ]);
+            $imgPath = $products->img_path; // 画像がアップロードされなかった場合は、既存の画像パスを保持
         }
+
+        $products->update([
+            'product_name' => $request->input('product_name'),
+            'price' => $request->input('price'),
+            'stock' => $request->input('stock'),
+            'comment' => $request->input('comment'),
+            'company_id' => $request->input('company_name'),
+            'img_path' => $imgPath, // 常にimg_pathを更新
+        ]);
 
         DB::commit();
         return redirect()->route('list');

@@ -7,23 +7,20 @@
 
         <input type="text" id="keyword" name="keyword" placeholder="検索キーワード" />
 
-        <select name="company_id">
-            <option value="">メーカー名</option>
-            @if(isset($companies) && $companies->count() > 0)
-                @foreach($companies as $company)
-                    <option value="{{ $company->id }}"
-                            @if(old('company_id') == $company->id) selected @endif>
-                        {{ $company->company_name }}
-                    </option>
-                @endforeach
-            @else
-                <option disabled>メーカー名を選択してください</option>
-            @endif
-        </select>
+        <select name="company_id" >
+        <option value="" >メーカー名</option>
+            @foreach($companies as $company)
+                <option value="{{ $company->id }}" >
+                    {{$company->company_name}}
+                </option>
+            @endforeach
+    </select>
 
         <input type="submit" class="button" id="search" value="検索" />
     </form>
+   
 </div>
+
 
     <div id="product_table">
     <table id="myTable" class="tablesorter" style="width: 1000px; max-width: 0 auto;">
@@ -42,7 +39,7 @@
             @foreach($products as $product)
             <tr>
                 <td>{{$product->id}}</td>
-                <td><img src="{{asset($product->image_path)}}" width="50" height="50"></td>
+                <td><img src="{{asset($product->img_path)}}" width="50" height="50"></td>
                 <td>{{$product->product_name}}</td>
                 <td>{{$product->price}}</td>
                 <td>{{$product->stock}}</td>

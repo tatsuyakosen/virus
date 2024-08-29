@@ -4,7 +4,7 @@
 
 <div class="outside">
 　　　　<!-- action属性がregistSubmitという名前のルートに設定されています。これは、フォームが送信されたときに呼び出されるコントローラメソッドを指す -->
-<form action="{{ route('touroku')}}" method="post" enctype="multipart/form-data" name="image_path">
+<form action="{{ route('touroku')}}" method="post" enctype="multipart/form-data" name="img_path">
     @csrf
 
     <p>商品名<a class="red">*</a></p>
@@ -43,7 +43,7 @@
     <input type="text" id="comment" name="comment" value="{{ old('comment') }}" />
 
     <p>商品画像</p>
-    <input type="file" id="image_path" name="image_path" value="{{ old('image_path') }}" />
+    <input type="file" id="img_path" name="img_path" value="{{ old('img_path') }}" />
 
     <div>
 

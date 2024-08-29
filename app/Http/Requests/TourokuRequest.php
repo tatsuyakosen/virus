@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductRequest extends FormRequest
+class TourokuRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +29,7 @@ class ProductRequest extends FormRequest
             'stock' => 'required | max:255',
             'company_name' => 'required | max:255',
             'comment' => 'required | max:255',
-            'image_path' => 'required',
+            'img_path' => 'required',
 
         ];
     }
@@ -42,7 +42,7 @@ class ProductRequest extends FormRequest
         'stock' => '在庫数',
         'company_name' => 'メーカー名',
         'comment' => 'コメント',
-        'image_path' => 'コメント',
+        'img_path' => 'コメント',
        ];
    }
 
@@ -58,7 +58,7 @@ class ProductRequest extends FormRequest
            'stock' => ':attributeは必須項目です。',
            'company_name' => ':attributeは必須項目です。',
            'comment' => ':attributeは必須項目です。',
-           'image_path' => ':attributeは必須項目です。'
+           'img_path' => ':attributeは必須項目です。'
        ];
    }
 }

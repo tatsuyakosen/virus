@@ -10,7 +10,7 @@ use App\Models\Sale;
 
 class Product extends Model
 {
-    protected $fillable = ['product_name','price','stock','comment','image_path','company_name'];
+    protected $fillable = ['product_name','price','stock','comment','img_path','company_name'];
 
     public function getList() {
         // productsテーブルからデータを取得
@@ -18,7 +18,7 @@ class Product extends Model
         return $products;
     }
 
-    public function registProduct($data,$image_path) {
+    public function registProduct($data,$img_path) {
         // 登録処理
     
         DB::table('products')->insert([
@@ -27,8 +27,8 @@ class Product extends Model
             'price' => $data->price,
             'stock' => $data->stock,
             'comment' => $data->comment,
-            'image_path' => $image_path,
-            'company_id' => $data->company_id
+            'img_path' => $img_path,
+            'company_id' => $data->company_name
         ]);
 
 
@@ -44,15 +44,15 @@ class Product extends Model
 
 
     // 更新処理
-    public function update_date($data, $products, $image_path){
+    public function update_date($data, $products, $img_path){
 
         $products= $products->fill([
             'product_name' => $data->product_name,
             'price' => $data->price,
             'stock' => $data->stock,
             'comment' => $data->comment,
-            'image_path' => $image_path,
-            'company_id' => $data->company_id
+            'img_path' => $img_path,
+            'company_id' => $data->company_name
         ])->save();
 
     }

@@ -12,7 +12,7 @@
 
         <tr>
             <td>商品画像</td>
-            <td><img src="{{asset($products->image_path)}}" width="50" height="50"></td>
+            <td><img src="{{asset($products->img_path)}}" width="50" height="50"></td>
         </tr>
 
         <tr>
