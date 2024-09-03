@@ -13,8 +13,12 @@ class Product extends Model
     protected $fillable = ['product_name','price','stock','comment','img_path','company_name'];
 
     public function getList() {
-        // productsテーブルからデータを取得
-        $products = DB::table('products')->get();
+        // productsテーブルとcompaniesテーブルを結合して全てのデータを取得
+        $products = DB::table('products')
+            ->join('companies', 'products.company_id', '=', 'companies.id')
+            ->select('products.*', 'companies.*') // 必要に応じてカラムを選択
+            ->get();
+        
         return $products;
     }
 

@@ -13,13 +13,14 @@ use App\Models\Company;
 class ProductController extends Controller
 {
     // 表示
-    public function showList() {
-        // productsテーブルからデータを取得
-        $products = DB::table('products')->get();
-        $model = new Company();
-        $companies = $model->getList_companies();
+    public function showList()
+    {
+        // Productモデルをインスタンス化し、データを取得
+        $model = new Product();
+        $products = $model->getList();
 
-        return view('product', ['products' => $products, 'companies' => $companies]);
+        // 取得したデータをビューに渡す
+        return view('product', ['products' => $products]);
     }
          
 
@@ -67,11 +68,20 @@ public function search(Request $request)
 
 
     //削除
-    public function delete(Request $request, Product $product){
+    public function delete(Request $request, Product $product)
+{
+    try {
         $product = Product::findOrFail($request->id);
         $product->delete();
-        return back();
+        return back()->with('success', 'Product deleted successfully.');
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // レコードが見つからなかった場合の処理
+        return back()->with('error', 'Product not found.');
+    } catch (\Exception $e) {
+        // その他のエラーが発生した場合の処理
+        return back()->with('error', 'Failed to delete the product.');
     }
+}
 
 
 

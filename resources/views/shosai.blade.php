@@ -70,7 +70,7 @@
         <button type="submit" class="regist">更新</button>
         <button type="button" class="info" onClick="history.back()">戻る</button>
     </form>
-    <button class="info" onclick="location.href='{{ route('list') }}' ">商品一覧</button>
+    
 </div>
 @endsection
 

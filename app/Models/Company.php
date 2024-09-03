@@ -16,7 +16,7 @@ class Company extends Model
         return $companies;
     }
 
-
+    protected $table = 'companies';
 
     //リレーション
     public function product() {

@@ -9,9 +9,9 @@
 
         <select name="company_id" >
         <option value="" >メーカー名</option>
-            @foreach($companies as $company)
-                <option value="{{ $company->id }}" >
-                    {{$company->company_name}}
+            @foreach($products as $product)
+                <option value="{{ $product->id }}" >
+                    {{$product->product_name}}
                 </option>
             @endforeach
     </select>
@@ -43,6 +43,8 @@
                 <td>{{$product->product_name}}</td>
                 <td>{{$product->price}}</td>
                 <td>{{$product->stock}}</td>
+                <td>{{$product->company_name}}</td>
+                
 
                 <!-- 詳細 -->
                 <td>
@@ -64,5 +66,5 @@
             @endforeach <!-- ここでループを閉じます -->
         </tbody>
     </table>
-    <button class="info" onclick="location.href='{{ route('list') }}' ">商品一覧</button>
+    
 </div>
