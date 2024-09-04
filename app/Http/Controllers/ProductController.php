@@ -58,7 +58,7 @@ public function search(Request $request)
 }
 
 
-    //product から info_product へ 詳細
+    //product から info(詳細)へ
     public function info() {
         $model = new Company();
         $companies = $model->getList_companies();
@@ -85,7 +85,7 @@ public function search(Request $request)
 
 
 
-    // product から regist_product へ 登録
+    // product から  登録画面へ
     public function new() {
         $model = new Product();
         $products = $model->getList();
@@ -137,11 +137,6 @@ public function search(Request $request)
     }
 
 
-    // regist_productから productへ
-    public function back_product() {
-        return view('product');
-    }
-
 
     //商品情報編集画面
     public function showShosai() {
@@ -152,7 +147,6 @@ public function search(Request $request)
         $companies = $model->getList_companies();
         $img_path = Product::all();
         $company =Company::all();
-        $products = $model->getList();
 
     return view('shosai', ['company' => $company,'companies' => $companies, 'products' => $products, 'img_path' =>$img_path]);
     }

@@ -11,7 +11,7 @@
         <option value="" >メーカー名</option>
             @foreach($products as $product)
                 <option value="{{ $product->id }}" >
-                    {{$product->product_name}}
+                    {{$product->company_name}}
                 </option>
             @endforeach
     </select>
