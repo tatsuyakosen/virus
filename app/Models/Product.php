@@ -16,10 +16,12 @@ class Product extends Model
         // productsテーブルとcompaniesテーブルを結合して全てのデータを取得
         $products = DB::table('products')
             ->join('companies', 'products.company_id', '=', 'companies.id')
-            ->select('products.*', 'companies.*') // 必要に応じてカラムを選択
+            ->select('products.*', 'companies.company_name') // 必要に応じてカラムを選択
             ->get();
-        
-        return $products;
+
+        $companies = Company::all();
+                
+            return $products; // productsデータを返す
     }
 
     public function registProduct($data,$img_path) {

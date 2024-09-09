@@ -7,14 +7,19 @@
 
         <input type="text" id="keyword" name="keyword" placeholder="検索キーワード" />
 
+
         <select name="company_id" >
-        <option value="" >メーカー名</option>
-            @foreach($products as $product)
-                <option value="{{ $product->id }}" >
-                    {{$product->company_name}}
-                </option>
-            @endforeach
-    </select>
+            <option value="">メーカー名</option>
+            @if(!empty($companies))
+                @foreach($companies as $company)
+                    <option value="{{ $company->id }}" 
+                            {{ old('company_id') == $company->id ? 'selected' : '' }}>
+                        {{ $company->company_name }}
+                    </option>
+                @endforeach
+            @endif
+        </select>
+
 
         <input type="submit" class="button" id="search" value="検索" />
     </form>
@@ -38,12 +43,12 @@
         <tbody>
             @foreach($products as $product)
             <tr>
-                <td>{{$product->id}}</td>
-                <td><img src="{{asset($product->img_path)}}" width="50" height="50"></td>
-                <td>{{$product->product_name}}</td>
-                <td>{{$product->price}}</td>
-                <td>{{$product->stock}}</td>
-                <td>{{$product->company_name}}</td>
+            <td>{{ $product->id }}</td>
+            <td><img src="{{ asset($product->img_path) }}" width="50" height="50"></td>
+            <td>{{ $product->product_name }}</td>
+            <td>{{ $product->price }}</td>
+            <td>{{ $product->stock }}</td>
+            <td>{{ $product->company_name }}</td>
                 
 
                 <!-- 詳細 -->

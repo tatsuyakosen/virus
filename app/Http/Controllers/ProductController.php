@@ -18,9 +18,13 @@ class ProductController extends Controller
         // Productモデルをインスタンス化し、データを取得
         $model = new Product();
         $products = $model->getList();
+        $companies = $model->getList();
 
         // 取得したデータをビューに渡す
-        return view('product', ['products' => $products]);
+        return view('product', [
+            'products' => $products,
+            'companies' => $companies,
+        ]);
     }
          
 
@@ -45,6 +49,7 @@ public function search(Request $request)
         $query->where('company_id', "=", $company_id);
     }
 
+
     $products = $query->paginate(3);
 
     $companies = Company::all();
@@ -56,6 +61,7 @@ public function search(Request $request)
         'keyword' => old('keyword'),
     ]);
 }
+
 
 
     //product から info(詳細)へ
