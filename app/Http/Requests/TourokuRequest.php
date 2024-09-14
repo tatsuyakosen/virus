@@ -27,7 +27,7 @@ class TourokuRequest extends FormRequest
             'product_name' => 'required | max:255',
             'price' => 'required | max:255',
             'stock' => 'required | max:255',
-            'company_name' => 'required | max:255',
+            'company_id' => 'required | max:255',
             'comment' => 'required | max:255',
             'img_path' => 'required',
 

@@ -10,7 +10,7 @@ use App\Models\Sale;
 
 class Product extends Model
 {
-    protected $fillable = ['product_name','price','stock','comment','img_path','company_name'];
+    protected $fillable = ['product_name','price','stock','comment','img_path','company_id'];
 
     public function getList() {
         // productsテーブルとcompaniesテーブルを結合して全てのデータを取得
@@ -34,7 +34,7 @@ class Product extends Model
             'stock' => $data->stock,
             'comment' => $data->comment,
             'img_path' => $img_path,
-            'company_id' => $data->company_name
+            'company_id' => $data->company_id
         ]);
 
 

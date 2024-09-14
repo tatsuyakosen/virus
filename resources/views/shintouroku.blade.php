@@ -16,15 +16,15 @@
 
 
 
-<p>メーカー名<a class="red">*</a></p>
-        <select name="company_name" placeholder="メーカー名" >
-            <option>メーカー名</option>
-            @foreach($companies as $company)
-            <option value="{{$company->id}}" >
-                {{$company->company_name}}
-            </option>
-            @endforeach
-        </select>
+    <p>メーカー名<a class="red">*</a></p>
+<select name="company_id" placeholder="メーカー名" >
+    <option value="">メーカー名</option>
+    @foreach($companies as $company)
+    <option value="{{$company->id}}" {{ old('company_id') == $company->id ? 'selected' : '' }}>
+        {{$company->company_name}}
+    </option>
+    @endforeach
+</select>
 
 
           <p>価格<a class="red">*</a></p>

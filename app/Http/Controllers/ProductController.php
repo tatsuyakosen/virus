@@ -18,7 +18,8 @@ class ProductController extends Controller
         // Productモデルをインスタンス化し、データを取得
         $model = new Product();
         $products = $model->getList();
-        $companies = $model->getList();
+        $companies = Company::all(); 
+        
 
         // 取得したデータをビューに渡す
         return view('product', [
@@ -37,31 +38,29 @@ public function search(Request $request)
         'company_id' => 'nullable|integer',
     ]);
 
-    $keyword = $validatedData['keyword'];
-    $company_id = $validatedData['company_id'];
+    $keyword = $validatedData['keyword'] ?? null;
+    $company_id = $validatedData['company_id'] ?? null;
 
-    $query = Product::query();
-    if ($keyword) {
-        $query->where('product_name', 'LIKE', "%{$keyword}%");
-    }
+    // リレーションを使った検索クエリ
+    $products = Product::with('company')  // companyリレーションをロード
+        ->when($keyword, function($query, $keyword) {
+            return $query->where('product_name', 'LIKE', "%{$keyword}%");
+        })
+        ->when($company_id, function($query, $company_id) {
+            return $query->where('company_id', $company_id);
+        })
+        ->get();
 
-    if ($company_id) {
-        $query->where('company_id', "=", $company_id);
-    }
-
-
-    $products = $query->paginate(3);
-
+    // メーカー一覧の取得
     $companies = Company::all();
 
     return view('product', [
         'products' => $products,
         'companies' => $companies,
-        'company_id' => old('company_id'),
-        'keyword' => old('keyword'),
+        'company_id' => $company_id,
+        'keyword' => $keyword,
     ]);
 }
-
 
 
     //product から info(詳細)へ
@@ -126,22 +125,28 @@ public function search(Request $request)
         // トランザクション開始
         DB::beginTransaction();
         try {
-        // 登録処理呼び出し
-        $model = new Product();
             // 取得したファイル名で保存
-        $request->file('img_path')->storeAs('public/' . $dir, $file_name);
-        $img_path = 'storage/' . $dir . '/' . $file_name;
-        $model->registProduct($request,$img_path);
-        DB::commit();
+            $request->file('img_path')->storeAs('public/' . $dir, $file_name);
+            $img_path = 'storage/' . $dir . '/' . $file_name;
+            
+            // Eloquentモデルでの登録処理
+            Product::create([
+                'product_name' => $request->input('product_name'),
+                'price' => $request->input('price'),
+                'stock' => $request->input('stock'),
+                'comment' => $request->input('comment'),
+                'img_path' => $img_path,
+                'company_id' => $request->input('company_id')
+            ]);
+    
+            DB::commit();
+            return redirect(route('list'))->with('success', '商品が登録されました');
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->route('list');
+            return back()->withErrors(['error' => '登録に失敗しました'])->withInput();
+        }
     }
-
     
-    return redirect(route('new'));
-    }
-
 
 
     //商品情報編集画面
@@ -190,7 +195,7 @@ public function update(TourokuRequest $request, $id)
             'price' => $request->input('price'),
             'stock' => $request->input('stock'),
             'comment' => $request->input('comment'),
-            'company_id' => $request->input('company_name'),
+            'company_id' => $request->input('company_id'),
             'img_path' => $imgPath, // 常にimg_pathを更新
         ]);
 

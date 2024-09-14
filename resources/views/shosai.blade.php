@@ -26,20 +26,20 @@
 
         <!-- メーカー名選択肢 -->
         <p>メーカー名<a class="red">*</a></p>
-        <select name="company_name">
+        <select name="company_id">
             <option value="">選択してください</option>
             @foreach($companies as $company)
-                <option value="{{ $company->id }}" {{ old('company_name', $products->company_id) == $company->id ? 'selected' : '' }}>
+                <option value="{{ $company->id }}" {{ old('company_id', $products->company_id) == $company->id ? 'selected' : '' }}>
                     {{ $company->company_name }}
                 </option>
             @endforeach
         </select>
-        @error('company_name')
+        @error('company_id')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
             </span>
         @enderror
-
+        
         <!-- 価格入力フィールド -->
         <p>価格<a class="red">*</a></p>
         <input type="text" id="price" name="price" value="{{ old('price', $products->price) }}">
