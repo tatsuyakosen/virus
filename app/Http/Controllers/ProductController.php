@@ -105,7 +105,7 @@ public function search(Request $request)
     // 表示
     public function show(Request $request) {
         $id = $request->id;
-        $products = Product::find($id);
+        $products = Product::with('company')->find($id); 
         $model = new Company();
         $companies = $model->getList_companies();
         $company_name = $request->company_name;

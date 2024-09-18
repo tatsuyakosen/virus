@@ -40,7 +40,7 @@ class TourokuRequest extends FormRequest
         'product_name' => '商品名',
         'price' => '価格',
         'stock' => '在庫数',
-        'company_name' => 'メーカー名',
+        'company_id' => 'メーカー名',
         'comment' => 'コメント',
         'img_path' => 'コメント',
        ];
@@ -56,7 +56,7 @@ class TourokuRequest extends FormRequest
            'product_name' => ':attributeは必須項目です。',
            'price' => ':attributeは必須項目です。',
            'stock' => ':attributeは必須項目です。',
-           'company_name' => ':attributeは必須項目です。',
+           'company_id' => ':attributeは必須項目です。',
            'comment' => ':attributeは必須項目です。',
            'img_path' => ':attributeは必須項目です。'
        ];
