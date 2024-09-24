@@ -13,20 +13,28 @@ use App\Models\Company;
 class ProductController extends Controller
 {
     // 表示
-    public function showList()
-    {
-        // Productモデルをインスタンス化し、データを取得
-        $model = new Product();
-        $products = $model->getList();
-        $companies = Company::all(); 
-        
+    public function showList(Request $request)
+{
+    $sort_column = $request->get('sort_column', 'id'); // デフォルトは'id'
+    $sort_direction = $request->get('sort_direction', 'desc'); // デフォルトは降順
 
-        // 取得したデータをビューに渡す
-        return view('product', [
-            'products' => $products,
-            'companies' => $companies,
-        ]);
-    }
+    // company_name を含めたソートに対応するために JOIN を使用
+    $products = DB::table('products')
+        ->join('companies', 'products.company_id', '=', 'companies.id')
+        ->select('products.*', 'companies.company_name')
+        ->orderBy($sort_column === 'company_name' ? 'companies.company_name' : "products.$sort_column", $sort_direction)
+        ->get();
+
+    $companies = Company::all();
+
+    return view('product', [
+        'products' => $products,
+        'companies' => $companies,
+        'sort_column' => $sort_column,
+        'sort_direction' => $sort_direction,
+    ]);
+}
+
          
 
 
@@ -36,22 +44,41 @@ public function search(Request $request)
     $validatedData = $request->validate([
         'keyword' => 'nullable|string|max:255',
         'company_id' => 'nullable|integer',
+        'price_min' => 'nullable|numeric',
+        'price_max' => 'nullable|numeric',
+        'stock_min' => 'nullable|integer',
+        'stock_max' => 'nullable|integer',
     ]);
 
     $keyword = $validatedData['keyword'] ?? null;
     $company_id = $validatedData['company_id'] ?? null;
+    $price_min = $validatedData['price_min'] ?? null;
+    $price_max = $validatedData['price_max'] ?? null;
+    $stock_min = $validatedData['stock_min'] ?? null;
+    $stock_max = $validatedData['stock_max'] ?? null;
 
     // リレーションを使った検索クエリ
-    $products = Product::with('company')  // companyリレーションをロード
+    $products = Product::with('company')  
         ->when($keyword, function($query, $keyword) {
             return $query->where('product_name', 'LIKE', "%{$keyword}%");
         })
         ->when($company_id, function($query, $company_id) {
             return $query->where('company_id', $company_id);
         })
+        ->when($price_min, function($query, $price_min) {
+            return $query->where('price', '>=', $price_min);
+        })
+        ->when($price_max, function($query, $price_max) {
+            return $query->where('price', '<=', $price_max);
+        })
+        ->when($stock_min, function($query, $stock_min) {
+            return $query->where('stock', '>=', $stock_min);
+        })
+        ->when($stock_max, function($query, $stock_max) {
+            return $query->where('stock', '<=', $stock_max);
+        })
         ->get();
 
-    // メーカー一覧の取得
     $companies = Company::all();
 
     return view('product', [
@@ -59,6 +86,10 @@ public function search(Request $request)
         'companies' => $companies,
         'company_id' => $company_id,
         'keyword' => $keyword,
+        'price_min' => $price_min,
+        'price_max' => $price_max,
+        'stock_min' => $stock_min,
+        'stock_max' => $stock_max,
     ]);
 }
 
@@ -72,21 +103,19 @@ public function search(Request $request)
 
 
 
-    //削除
-    public function delete(Request $request, Product $product)
-{
-    try {
-        $product = Product::findOrFail($request->id);
-        $product->delete();
-        return back()->with('success', 'Product deleted successfully.');
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        // レコードが見つからなかった場合の処理
-        return back()->with('error', 'Product not found.');
-    } catch (\Exception $e) {
-        // その他のエラーが発生した場合の処理
-        return back()->with('error', 'Failed to delete the product.');
+    // 削除
+    public function delete(Request $request)
+    {
+        try {
+            $product = Product::findOrFail($request->id);
+            $product->delete();
+            return response()->json(['success' => true]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'message' => 'Product not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to delete the product.'], 500);
+        }
     }
-}
 
 
 
