@@ -38,10 +38,10 @@ Route::post('/delete/{id}', [ProductController::class, 'delete'])->name('delete'
 
 //商品新規登録画面
 //登録
-Route::post('/touroku',[App\Http\Controllers\ProductController::class, 'touroku'])->name('touroku');
+Route::post('/updateProduct',[App\Http\Controllers\ProductController::class, 'updateProduct'])->name('updateProduct');
 
 //商品情報詳細画面
-Route::get('/shosai/{id}', [App\Http\Controllers\ProductController::class, 'shosai'])->name('shosai');
+Route::get('/showDetail/{id}', [App\Http\Controllers\ProductController::class, 'showDetail'])->name('showDetail');
 
 //更新(編集も作成)
 Route::patch('/update/{id}', [App\Http\Controllers\ProductController::class, 'update'])->name('update');

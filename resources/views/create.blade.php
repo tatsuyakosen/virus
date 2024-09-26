@@ -4,7 +4,7 @@
 
 <div class="outside">
 　　　　<!-- action属性がregistSubmitという名前のルートに設定されています。これは、フォームが送信されたときに呼び出されるコントローラメソッドを指す -->
-<form action="{{ route('touroku')}}" method="post" enctype="multipart/form-data" name="img_path">
+<form action="{{ route('updateProduct')}}" method="post" enctype="multipart/form-data" name="img_path">
     @csrf
 
     <p>商品名<a class="red">*</a></p>

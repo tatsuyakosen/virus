@@ -41,7 +41,7 @@
         </tr>
         </table>
 
-        <button class="regist" onclick="location.href='{{ route('shosai', ['id' => $products->id]) }}' ">編集</button>
+        <button class="regist" onclick="location.href='{{ route('showDetail', ['id' => $products->id]) }}' ">編集</button>
 
         <button class="info" onclick="location.href='{{ route('list') }}' ">戻る</button>
     @endif @endforeach

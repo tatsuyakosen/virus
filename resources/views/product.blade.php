@@ -4,9 +4,9 @@
 <h1>商品一覧画面</h1>
 
 <div class="outside">
-<form action="{{ route('search') }}" method="GET" id="product_search">
+<form action="{{ route('list') }}" method="GET" id="product_search">
     @csrf
-    <input type="text" id="keyword" name="keyword" placeholder="検索キーワード" />
+    <input type="text" id="keyword" name="keyword" placeholder="検索キーワード" value="{{ request('keyword') }}" />
 
     <select name="company_id">
         <option value="">メーカー名</option>
@@ -33,12 +33,12 @@
     <table id="myTable" class="tablesorter">
         <thead>
             <tr>
-                <th><a href="{{ route('list', ['sort_column' => 'id', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc']) }}">ID</a></th>
+                <th><a href="{{ route('list', array_merge(request()->all(), ['sort_column' => 'id', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc'])) }}">ID</a></th>
                 <th>商品画像</th>
-                <th><a href="{{ route('list', ['sort_column' => 'product_name', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc']) }}">商品名</a></th>
-                <th><a href="{{ route('list', ['sort_column' => 'price', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc']) }}">価格</a></th>
-                <th><a href="{{ route('list', ['sort_column' => 'stock', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc']) }}">在庫数</a></th>
-                <th><a href="{{ route('list', ['sort_column' => 'company_name', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc']) }}">メーカー名</a></th>
+                <th><a href="{{ route('list', array_merge(request()->all(), ['sort_column' => 'product_name', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc'])) }}">商品名</a></th>
+                <th><a href="{{ route('list', array_merge(request()->all(), ['sort_column' => 'price', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc'])) }}">価格</a></th>
+                <th><a href="{{ route('list', array_merge(request()->all(), ['sort_column' => 'stock', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc'])) }}">在庫数</a></th>
+                <th><a href="{{ route('list', array_merge(request()->all(), ['sort_column' => 'company_name', 'sort_direction' => request('sort_direction') == 'asc' ? 'desc' : 'asc'])) }}">メーカー名</a></th>
                 <th><button type="button" class="regist" onclick="location.href='{{ route('new') }}'">新規登録</button></th>
             </tr>
         </thead>
@@ -104,8 +104,16 @@
                     url: form.attr('action'),
                     type: 'POST',
                     data: form.serialize(),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     success: function(response) {
-                        $('tr').filter(`[data-product_id="${productId}"]`).remove();
+                        if (response.success) {
+                            // 成功時に削除対象の行を削除
+                            $('tr[data-product_id="' + productId + '"]').remove();
+                        } else {
+                            alert('削除に失敗しました。');
+                        }
                     },
                     error: function(xhr, status, error) {
                         console.log('削除に失敗しました: ' + error);
@@ -115,4 +123,5 @@
         });
     });
 </script>
+
 @endsection
